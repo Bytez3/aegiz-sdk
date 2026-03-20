@@ -29,7 +29,7 @@
         "type": "git",
         "url": "https://github.com/Bytez3/aegiz-sdk"
     },
-    "homepage": "https://aegiz.dev",
+    "homepage": "https://aegiz.io",
     "peerDependencies": {
         "@coral-xyz/anchor": ">=0.29.0",
         "@solana/web3.js": ">=1.73.0"

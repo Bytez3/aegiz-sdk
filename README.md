@@ -12,7 +12,7 @@
   <a href="https://www.npmjs.com/package/@aegiz/sdk"><img src="https://img.shields.io/npm/v/@aegiz/sdk?color=blue&label=npm" alt="npm version" /></a>
   <a href="https://github.com/Bytez3/aegiz-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License" /></a>
   <a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-On--Chain-blueviolet" alt="Solana" /></a>
-  <a href="https://aegiz.dev"><img src="https://img.shields.io/badge/website-aegiz.dev-cyan" alt="Website" /></a>
+  <a href="https://aegiz.io"><img src="https://img.shields.io/badge/website-aegiz.io-cyan" alt="Website" /></a>
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 
 ---
 
-Aegiz is a neural network that runs **entirely on-chain** — it trains, learns, and predicts inside a Solana smart contract. No servers. No APIs. No trust required.
+Aegiz is a neural network that runs **inference entirely on-chain** — it predicts and scores threats inside a Solana smart contract. Training happens off-chain via RLHF, with trained weights uploaded to the on-chain model. No servers. No APIs. No trust required.
 
 This SDK lets you integrate Aegiz threat detection into your dApp, wallet, or service.
 
@@ -35,7 +35,7 @@ This SDK lets you integrate Aegiz threat detection into your dApp, wallet, or se
   <img src="assets/architecture.png" alt="Aegiz Architecture" width="700" />
 </p>
 
-Three independent neural networks run **on-chain** and combine into an ensemble risk score:
+Three independent neural networks run **inference on-chain** and combine into an ensemble risk score. Training is performed **off-chain** via RLHF (Reinforcement Learning from Human Feedback) and weight updates are uploaded to the on-chain model.
 
 | Neural Network | Features | Purpose |
 |---|---|---|
@@ -64,8 +64,7 @@ npm install @solana/web3.js @coral-xyz/anchor
 import { AegizClient } from "@aegiz/sdk";
 import { PublicKey } from "@solana/web3.js";
 
-// Connect to mainnet (default) or devnet
-const client = new AegizClient("https://api.devnet.solana.com");
+const client = new AegizClient("https://api.mainnet-beta.solana.com");
 
 // Quick risk check — works for wallets AND programs
 const result = await client.quickCheck(new PublicKey("SomeAddress..."));
@@ -84,9 +83,6 @@ const mint = await client.getTokenMintAnalysis(mintPubkey);
 
 // Get model stats (version, accuracy, active params)
 const stats = await client.getModelStats();
-console.log(stats.walletActiveParams);  // 145/145
-console.log(stats.programActiveParams); // 145/145
-console.log(stats.tokenActiveParams);   // 145/145
 ```
 
 ### With Wallet (Transactions)
@@ -112,13 +108,11 @@ await client.scanTokenMint(mintPubkey);
 // Ensemble score (combines all three NNs)
 await client.ensembleScore(walletRepPda, programRepPda, mintAnalysisPda);
 
-// Community reporting
+// Community reporting & voting
 await client.reportScam(scamWallet, "Drainer — stole 50 SOL", 10_000_000);
 await client.reportScamProgram(scamProgram, "Fake DEX", 10_000_000);
-
-// Vote on reports
-await client.voteOnReport(blacklistEntry, true);   // confirm
-await client.voteOnProgramReport(blacklistEntry, false); // dispute
+await client.voteOnReport(blacklistEntry, true);
+await client.voteOnProgramReport(blacklistEntry, false);
 ```
 
 ## API Reference
@@ -141,7 +135,7 @@ await client.voteOnProgramReport(blacklistEntry, false); // dispute
 
 | Method | Description |
 |---|---|
-| `predict(wallet, txCount?)` | Run AI prediction on a wallet |
+| `predict(wallet, txCount?)` | Run on-chain AI inference on a wallet |
 | `scanProgram(program, data, auth?)` | Scan a program for threats |
 | `scanTokenMint(mint)` | Scan a token mint for rugpull signals |
 | `scanTokens(wallet, accounts?)` | Scan token accounts for drainers |
@@ -150,25 +144,6 @@ await client.voteOnProgramReport(blacklistEntry, false); // dispute
 | `reportScamProgram(program, proof, stake?)` | Report a program as scam |
 | `voteOnReport(entry, confirm, stake?)` | Vote on a wallet report |
 | `voteOnProgramReport(entry, confirm, stake?)` | Vote on a program report |
-
-### Admin Methods
-
-| Method | Description |
-|---|---|
-| `confirmScam(entry, wallet)` | Confirm a wallet scam report |
-| `confirmScamProgram(program, data, auth?)` | Confirm a program scam report |
-| `resolveReport(entry, wallet)` | Resolve a wallet report |
-| `resolveProgramReport(entry, program)` | Resolve a program report |
-| `rewardReporter(reporter, entry)` | Reward reporter for correct report |
-| `rewardProgramReporter(reporter, entry)` | Reward program reporter |
-| `setFees(prediction, scanProg, ensemble, scanToken)` | Set system fees |
-| `resetAccuracy()` | Reset accuracy counters |
-| `withdrawTreasury()` | Withdraw treasury funds |
-| `snapshotWeights()` | Snapshot NN weights for rollback |
-| `rollbackWeights()` | Rollback to last weight snapshot |
-| `removeBlacklistEntry(wallet)` | Remove a blacklist entry |
-| `emergencyPause(pause)` | Pause/unpause the system |
-| `uploadWeights(weights, chunkSize?)` | Upload NN weights in chunks |
 
 ### PDA Helpers
 
@@ -193,22 +168,22 @@ import {
 | **Program ID** | `5QA63aoUXwHB6aUSvbzpHejKaqFCf8RafAFjhfjjRVnT` |
 | **Architecture** | 3× (16→8→1) Ensemble |
 | **Total Parameters** | 435 active / 1500 reserved |
-| **SDK Version** | 1.0.0 |
+| **Inference** | On-chain (Solana BPF) |
+| **Training** | Off-chain (RLHF) |
 
 ## Features
 
-- 🧠 **On-Chain Neural Network** — Three 16→8→1 NNs running entirely on Solana
+- 🧠 **On-Chain Inference** — Three 16→8→1 NNs running inference entirely on Solana
+- 🎓 **Off-Chain Training** — RLHF-trained models with weights uploaded to the program
 - 🛡️ **Ensemble Scoring** — Combined risk assessment from wallet, program, and token analysis
 - 👥 **Community Reporting** — Stake-backed scam reporting with voting
 - 🔍 **Token Scanning** — Detect honeypots, rugpulls, and drainer patterns
 - 📊 **Reputation Tracking** — Persistent wallet and program reputation PDAs
 - ⚡ **Zero Trust** — No servers, no APIs, everything verifiable on-chain
-- 🏦 **Fee Governance** — Configurable prediction and scan fees
-- 🔄 **Weight Snapshots** — Rollback NN weights if needed
 
 ## Links
 
-- 🌐 Website: [aegiz.dev](https://aegiz.dev)
+- 🌐 Website: [aegiz.io](https://aegiz.io)
 - 🐦 Twitter: [@aegizsol](https://x.com/aegizsol)
 - 💻 GitHub: [Bytez3/aegiz-sdk](https://github.com/Bytez3/aegiz-sdk)
 - 🔗 Explorer: [View on Solana](https://explorer.solana.com/address/5QA63aoUXwHB6aUSvbzpHejKaqFCf8RafAFjhfjjRVnT)
