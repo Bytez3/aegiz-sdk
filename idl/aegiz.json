@@ -1,0 +1,4075 @@
+{
+  "address": "5QA63aoUXwHB6aUSvbzpHejKaqFCf8RafAFjhfjjRVnT",
+  "metadata": {
+    "name": "aegiz",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "confirm_scam",
+      "docs": [
+        "Admin confirms scam → accuracy tracking."
+      ],
+      "discriminator": [
+        4,
+        162,
+        120,
+        105,
+        201,
+        164,
+        50,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  108,
+                  97,
+                  99,
+                  107,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "blacklist_entry.flagged_wallet",
+                "account": "BlacklistEntry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_wallet"
+        },
+        {
+          "name": "wallet_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "blacklist_entry.flagged_wallet",
+                "account": "BlacklistEntry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "docs": [
+            "Treasury receives escrowed stakes"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "confirm_scam_program",
+      "docs": [
+        "Admin confirms a program is a scam → accuracy tracking."
+      ],
+      "discriminator": [
+        69,
+        43,
+        8,
+        162,
+        219,
+        254,
+        248,
+        56
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_program"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "program_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  114,
+                  101,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "target_program"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority_reputation",
+          "docs": [
+            "Optional: the authority's WalletReputation PDA"
+          ],
+          "writable": true,
+          "optional": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "emergency_pause",
+      "docs": [
+        "Emergency pause/unpause the system (admin only)."
+      ],
+      "discriminator": [
+        21,
+        143,
+        27,
+        142,
+        200,
+        181,
+        210,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "pause",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "ensemble_score",
+      "docs": [
+        "Get ensemble risk score combining wallet + program + token analysis."
+      ],
+      "discriminator": [
+        25,
+        151,
+        43,
+        81,
+        99,
+        226,
+        191,
+        253
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet_reputation",
+          "docs": [
+            "Wallet reputation — REQUIRED, PDA-verified"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet_reputation.wallet",
+                "account": "WalletReputation"
+              }
+            ]
+          }
+        },
+        {
+          "name": "program_reputation",
+          "docs": [
+            "Optional: program reputation PDA — verified via seeds"
+          ],
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  114,
+                  101,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "program_reputation.program_id",
+                "account": "ProgramReputation"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint_analysis",
+          "docs": [
+            "Optional: token mint analysis PDA — verified via seeds"
+          ],
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  97,
+                  110,
+                  97,
+                  108,
+                  121,
+                  115,
+                  105,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint_analysis.mint",
+                "account": "TokenMintAnalysis"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize the Sentinel model and treasury."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_model",
+      "docs": [
+        "Migrate/reallocate model account to correct size after struct changes (admin only)."
+      ],
+      "discriminator": [
+        90,
+        10,
+        167,
+        137,
+        249,
+        28,
+        226,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "docs": [
+            "Cannot use AccountLoader because the account may have old layout."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "predict",
+      "docs": [
+        "Predict fraud risk using 16 verified on-chain features."
+      ],
+      "discriminator": [
+        254,
+        114,
+        112,
+        244,
+        37,
+        49,
+        32,
+        128
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "target_wallet"
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "target_wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "caller_recent_tx_count",
+          "type": "u64"
+        }
+      ],
+      "returns": "u8"
+    },
+    {
+      "name": "remove_blacklist_entry",
+      "docs": [
+        "Remove a blacklist entry (admin only)."
+      ],
+      "discriminator": [
+        132,
+        199,
+        209,
+        126,
+        114,
+        99,
+        69,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  108,
+                  97,
+                  99,
+                  107,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "flagged_wallet"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "_flagged_wallet",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "report_scam",
+      "docs": [
+        "Report a scam (requires staking)."
+      ],
+      "discriminator": [
+        217,
+        184,
+        188,
+        131,
+        158,
+        217,
+        227,
+        239
+      ],
+      "accounts": [
+        {
+          "name": "reporter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  108,
+                  97,
+                  99,
+                  107,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "flagged_wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "flagged_wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "flagged_wallet",
+          "type": "pubkey"
+        },
+        {
+          "name": "proof",
+          "type": "string"
+        },
+        {
+          "name": "stake_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "report_scam_program",
+      "docs": [
+        "Report a program as malicious (requires staking)."
+      ],
+      "discriminator": [
+        236,
+        131,
+        227,
+        11,
+        47,
+        45,
+        150,
+        253
+      ],
+      "accounts": [
+        {
+          "name": "reporter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  114,
+                  101,
+                  112
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "flagged_program"
+              }
+            ]
+          }
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  95,
+                  98,
+                  108,
+                  97,
+                  99,
+                  107,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "flagged_program"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "flagged_program",
+          "type": "pubkey"
+        },
+        {
+          "name": "proof",
+          "type": "string"
+        },
+        {
+          "name": "stake_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "reset_accuracy",
+      "docs": [
+        "Reset accuracy counters (admin only) — for fresh measurement after retraining."
+      ],
+      "discriminator": [
+        147,
+        1,
+        33,
+        243,
+        106,
+        172,
+        49,
+        151
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolve_program_report",
+      "docs": [
+        "Resolve program report by vote."
+      ],
+      "discriminator": [
+        224,
+        226,
+        225,
+        241,
+        247,
+        68,
+        194,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true
+        },
+        {
+          "name": "target_program"
+        },
+        {
+          "name": "program_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  114,
+                  101,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "blacklist_entry.flagged_program",
+                "account": "ProgramBlacklistEntry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "docs": [
+            "SECURITY FIX: Treasury receives escrowed stakes instead of admin"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolve_report",
+      "docs": [
+        "Resolve report by vote → false-positive correction if dismissed."
+      ],
+      "discriminator": [
+        78,
+        107,
+        3,
+        113,
+        222,
+        99,
+        178,
+        59
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true
+        },
+        {
+          "name": "target_wallet"
+        },
+        {
+          "name": "wallet_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "blacklist_entry.flagged_wallet",
+                "account": "BlacklistEntry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "docs": [
+            "SECURITY FIX: Treasury receives escrowed stakes instead of admin"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reward_program_reporter",
+      "docs": [
+        "Reward a reporter whose program scam report was confirmed (admin only)."
+      ],
+      "discriminator": [
+        253,
+        90,
+        174,
+        225,
+        227,
+        209,
+        149,
+        236
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "The admin who authorizes the reward"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "reporter",
+          "docs": [
+            "The reporter who submitted the confirmed scam report"
+          ],
+          "writable": true
+        },
+        {
+          "name": "blacklist_entry",
+          "docs": [
+            "The confirmed blacklist entry"
+          ],
+          "writable": true
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reward_reporter",
+      "docs": [
+        "Reward a reporter whose scam report was confirmed (admin only)."
+      ],
+      "discriminator": [
+        174,
+        125,
+        211,
+        210,
+        177,
+        53,
+        204,
+        44
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "The admin who authorizes the reward"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "reporter",
+          "docs": [
+            "The reporter who submitted the confirmed scam report"
+          ],
+          "writable": true
+        },
+        {
+          "name": "blacklist_entry",
+          "docs": [
+            "The confirmed blacklist entry"
+          ],
+          "writable": true
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "rollback_program_weights",
+      "docs": [
+        "Rollback program weights to last snapshot (admin anti-poisoning)."
+      ],
+      "discriminator": [
+        243,
+        216,
+        90,
+        156,
+        74,
+        112,
+        123,
+        205
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "rollback_token_weights",
+      "docs": [
+        "Rollback token weights to last snapshot (admin anti-poisoning)."
+      ],
+      "discriminator": [
+        60,
+        53,
+        255,
+        54,
+        34,
+        212,
+        192,
+        64
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "rollback_weights",
+      "docs": [
+        "Rollback weights to last snapshot (admin anti-poisoning)."
+      ],
+      "discriminator": [
+        139,
+        103,
+        125,
+        31,
+        59,
+        76,
+        246,
+        179
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "scan_program",
+      "docs": [
+        "Scan a Solana program/dApp for malicious signals."
+      ],
+      "discriminator": [
+        161,
+        53,
+        135,
+        176,
+        170,
+        29,
+        97,
+        201
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "target_program",
+          "docs": [
+            "The program to scan (must be executable)"
+          ]
+        },
+        {
+          "name": "program_data",
+          "docs": [
+            "The program's data account (BPF Loader Upgradeable ProgramData)"
+          ]
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  114,
+                  101,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "target_program"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority_reputation",
+          "docs": [
+            "Optional: the authority's WalletReputation PDA (if exists)"
+          ],
+          "optional": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "scan_token_mint",
+      "docs": [
+        "Scan a token mint for honeypot signals (mint/freeze authority, supply)."
+      ],
+      "discriminator": [
+        80,
+        104,
+        159,
+        204,
+        82,
+        247,
+        138,
+        4
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint",
+          "docs": [
+            "The token mint account to analyze"
+          ]
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint_analysis",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  97,
+                  110,
+                  97,
+                  108,
+                  121,
+                  115,
+                  105,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "scan_tokens",
+      "docs": [
+        "Scan token accounts for drainer/infection signals.",
+        "Pass token accounts as remaining_accounts."
+      ],
+      "discriminator": [
+        141,
+        193,
+        168,
+        82,
+        9,
+        25,
+        87,
+        228
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "target_wallet"
+        },
+        {
+          "name": "wallet_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "target_wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_fees",
+      "docs": [
+        "Update scan fees (admin only)."
+      ],
+      "discriminator": [
+        137,
+        178,
+        49,
+        58,
+        0,
+        245,
+        242,
+        190
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "prediction_fee",
+          "type": "u64"
+        },
+        {
+          "name": "scan_program_fee",
+          "type": "u64"
+        },
+        {
+          "name": "ensemble_fee",
+          "type": "u64"
+        },
+        {
+          "name": "scan_token_fee",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "snapshot_program_weights",
+      "docs": [
+        "Save program weight snapshot (admin anti-poisoning)."
+      ],
+      "discriminator": [
+        171,
+        198,
+        174,
+        116,
+        3,
+        147,
+        152,
+        5
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "snapshot_token_weights",
+      "docs": [
+        "Save token weight snapshot (admin anti-poisoning)."
+      ],
+      "discriminator": [
+        38,
+        4,
+        221,
+        120,
+        181,
+        47,
+        110,
+        155
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "snapshot_weights",
+      "docs": [
+        "Save weight snapshot (admin anti-poisoning)."
+      ],
+      "discriminator": [
+        182,
+        4,
+        113,
+        95,
+        146,
+        144,
+        220,
+        107
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_weights",
+      "docs": [
+        "Upload neural network weights in chunks (admin only)."
+      ],
+      "discriminator": [
+        192,
+        98,
+        7,
+        248,
+        207,
+        120,
+        17,
+        66
+      ],
+      "accounts": [
+        {
+          "name": "sentinel_model",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "offset",
+          "type": "u16"
+        },
+        {
+          "name": "chunk",
+          "type": {
+            "vec": "f32"
+          }
+        }
+      ]
+    },
+    {
+      "name": "vote_on_program_report",
+      "docs": [
+        "Vote on a program scam report (stake SOL)."
+      ],
+      "discriminator": [
+        126,
+        151,
+        80,
+        225,
+        103,
+        169,
+        140,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "voter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true
+        },
+        {
+          "name": "scam_vote",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "blacklist_entry"
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "is_confirm",
+          "type": "bool"
+        },
+        {
+          "name": "stake_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "vote_on_report",
+      "docs": [
+        "Vote on a scam report (stake SOL)."
+      ],
+      "discriminator": [
+        211,
+        25,
+        50,
+        165,
+        151,
+        80,
+        235,
+        245
+      ],
+      "accounts": [
+        {
+          "name": "voter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "blacklist_entry",
+          "writable": true
+        },
+        {
+          "name": "scam_vote",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "blacklist_entry"
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "is_confirm",
+          "type": "bool"
+        },
+        {
+          "name": "stake_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_treasury",
+      "docs": [
+        "Withdraw treasury fees (admin only)."
+      ],
+      "discriminator": [
+        40,
+        63,
+        122,
+        158,
+        144,
+        216,
+        83,
+        96
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sentinel_model",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  111,
+                  100,
+                  101,
+                  108,
+                  95,
+                  119,
+                  101,
+                  105,
+                  103,
+                  104,
+                  116,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sentinel_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  116,
+                  105,
+                  110,
+                  101,
+                  108,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BlacklistEntry",
+      "discriminator": [
+        218,
+        179,
+        231,
+        40,
+        141,
+        25,
+        168,
+        189
+      ]
+    },
+    {
+      "name": "ProgramBlacklistEntry",
+      "discriminator": [
+        19,
+        54,
+        165,
+        84,
+        135,
+        183,
+        243,
+        75
+      ]
+    },
+    {
+      "name": "ProgramReputation",
+      "discriminator": [
+        30,
+        252,
+        175,
+        27,
+        88,
+        246,
+        18,
+        239
+      ]
+    },
+    {
+      "name": "ScamVote",
+      "discriminator": [
+        123,
+        196,
+        136,
+        224,
+        219,
+        17,
+        96,
+        100
+      ]
+    },
+    {
+      "name": "SentinelModel",
+      "discriminator": [
+        98,
+        232,
+        99,
+        230,
+        195,
+        137,
+        132,
+        105
+      ]
+    },
+    {
+      "name": "SentinelTreasury",
+      "discriminator": [
+        189,
+        113,
+        130,
+        29,
+        79,
+        131,
+        93,
+        185
+      ]
+    },
+    {
+      "name": "TokenMintAnalysis",
+      "discriminator": [
+        155,
+        36,
+        51,
+        113,
+        208,
+        34,
+        161,
+        20
+      ]
+    },
+    {
+      "name": "WalletReputation",
+      "discriminator": [
+        35,
+        98,
+        166,
+        181,
+        84,
+        166,
+        76,
+        55
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AccuracyEvent",
+      "discriminator": [
+        77,
+        109,
+        249,
+        46,
+        27,
+        218,
+        133,
+        76
+      ]
+    },
+    {
+      "name": "EnsembleScoreEvent",
+      "discriminator": [
+        233,
+        90,
+        186,
+        148,
+        189,
+        79,
+        159,
+        12
+      ]
+    },
+    {
+      "name": "EscalationEvent",
+      "discriminator": [
+        125,
+        94,
+        80,
+        187,
+        84,
+        52,
+        93,
+        212
+      ]
+    },
+    {
+      "name": "PauseEvent",
+      "discriminator": [
+        32,
+        51,
+        61,
+        169,
+        156,
+        104,
+        130,
+        43
+      ]
+    },
+    {
+      "name": "PredictionEvent",
+      "discriminator": [
+        191,
+        189,
+        255,
+        253,
+        230,
+        11,
+        4,
+        32
+      ]
+    },
+    {
+      "name": "ProgramReportEvent",
+      "discriminator": [
+        251,
+        184,
+        51,
+        54,
+        255,
+        253,
+        61,
+        222
+      ]
+    },
+    {
+      "name": "ProgramScamConfirmedEvent",
+      "discriminator": [
+        199,
+        221,
+        161,
+        50,
+        216,
+        38,
+        165,
+        238
+      ]
+    },
+    {
+      "name": "ProgramScanEvent",
+      "discriminator": [
+        108,
+        35,
+        134,
+        111,
+        175,
+        212,
+        96,
+        178
+      ]
+    },
+    {
+      "name": "ReportResolvedEvent",
+      "discriminator": [
+        97,
+        209,
+        162,
+        54,
+        119,
+        220,
+        49,
+        103
+      ]
+    },
+    {
+      "name": "RewardEvent",
+      "discriminator": [
+        9,
+        66,
+        81,
+        127,
+        29,
+        14,
+        62,
+        86
+      ]
+    },
+    {
+      "name": "ScamConfirmedEvent",
+      "discriminator": [
+        162,
+        251,
+        232,
+        153,
+        111,
+        5,
+        213,
+        235
+      ]
+    },
+    {
+      "name": "ScamReportEvent",
+      "discriminator": [
+        149,
+        23,
+        238,
+        68,
+        13,
+        128,
+        51,
+        3
+      ]
+    },
+    {
+      "name": "TokenMintScanEvent",
+      "discriminator": [
+        237,
+        199,
+        72,
+        181,
+        30,
+        69,
+        133,
+        44
+      ]
+    },
+    {
+      "name": "TokenScanEvent",
+      "discriminator": [
+        242,
+        70,
+        87,
+        140,
+        76,
+        36,
+        226,
+        39
+      ]
+    },
+    {
+      "name": "VoteEvent",
+      "discriminator": [
+        195,
+        71,
+        250,
+        105,
+        120,
+        119,
+        234,
+        134
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: only the admin can perform this action"
+    },
+    {
+      "code": 6001,
+      "name": "ChunkOutOfBounds",
+      "msg": "Weight chunk exceeds array bounds (max index 1499)"
+    },
+    {
+      "code": 6002,
+      "name": "ChunkTooLarge",
+      "msg": "Weight chunk too large (max 250 values per transaction)"
+    },
+    {
+      "code": 6003,
+      "name": "ChunkEmpty",
+      "msg": "Weight chunk cannot be empty"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidWeight",
+      "msg": "Weight value must be finite (no NaN or Infinity)"
+    },
+    {
+      "code": 6005,
+      "name": "ProofTooLong",
+      "msg": "Proof string too long (max 256 characters)"
+    },
+    {
+      "code": 6006,
+      "name": "ProofEmpty",
+      "msg": "Proof string cannot be empty"
+    },
+    {
+      "code": 6007,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6008,
+      "name": "ModelNotInitialized",
+      "msg": "Model weights not yet initialized"
+    },
+    {
+      "code": 6009,
+      "name": "NothingToWithdraw",
+      "msg": "No funds available to withdraw"
+    },
+    {
+      "code": 6010,
+      "name": "StakeTooLow",
+      "msg": "Stake amount below minimum required"
+    },
+    {
+      "code": 6011,
+      "name": "ReportAlreadyResolved",
+      "msg": "Report has already been resolved"
+    },
+    {
+      "code": 6012,
+      "name": "InsufficientVotes",
+      "msg": "Insufficient votes or stake to resolve"
+    },
+    {
+      "code": 6013,
+      "name": "NoSnapshot",
+      "msg": "No weight snapshot exists to rollback to"
+    },
+    {
+      "code": 6014,
+      "name": "InvalidTokenAccount",
+      "msg": "Invalid token account data"
+    },
+    {
+      "code": 6015,
+      "name": "NotAProgram",
+      "msg": "Target is not an executable program"
+    },
+    {
+      "code": 6016,
+      "name": "InvalidProgram",
+      "msg": "Invalid program data account"
+    },
+    {
+      "code": 6017,
+      "name": "ProgramModelNotInitialized",
+      "msg": "Program NN weights not yet initialized"
+    },
+    {
+      "code": 6018,
+      "name": "WrongLoaderOwner",
+      "msg": "Wrong BPF Loader owner"
+    },
+    {
+      "code": 6019,
+      "name": "ProgramDataMismatch",
+      "msg": "ProgramData address mismatch"
+    },
+    {
+      "code": 6020,
+      "name": "ProgramDataTooSmall",
+      "msg": "ProgramData too small"
+    },
+    {
+      "code": 6021,
+      "name": "ProgramPaused",
+      "msg": "Program is paused — emergency stop active"
+    },
+    {
+      "code": 6022,
+      "name": "RateLimitExceeded",
+      "msg": "Rate limit exceeded — too many scans per epoch"
+    },
+    {
+      "code": 6023,
+      "name": "InvalidFee",
+      "msg": "Fee value out of allowed range (0.0001 SOL to 1 SOL)"
+    },
+    {
+      "code": 6024,
+      "name": "StakeTooHigh",
+      "msg": "Stake amount exceeds maximum allowed per vote"
+    },
+    {
+      "code": 6025,
+      "name": "LowConfidenceScore",
+      "msg": "Low confidence: missing reputation PDAs for ensemble scoring"
+    }
+  ],
+  "types": [
+    {
+      "name": "AccuracyEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rolling_correct",
+            "type": "u32"
+          },
+          {
+            "name": "rolling_total",
+            "type": "u32"
+          },
+          {
+            "name": "accuracy_pct",
+            "type": "f32"
+          },
+          {
+            "name": "total_training_events",
+            "type": "u64"
+          },
+          {
+            "name": "model_version",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BlacklistEntry",
+      "docs": [
+        "Blacklist entry with staking. PDA seeds: [\"blacklist\", flagged_wallet]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flagged_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "reporter",
+            "type": "pubkey"
+          },
+          {
+            "name": "proof",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "stake_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "confirm_count",
+            "type": "u16"
+          },
+          {
+            "name": "dispute_count",
+            "type": "u16"
+          },
+          {
+            "name": "confirm_stake",
+            "type": "u64"
+          },
+          {
+            "name": "dispute_stake",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "0=pending, 1=confirmed, 2=dismissed"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "resolved",
+            "type": "bool"
+          },
+          {
+            "name": "predicted_score",
+            "docs": [
+              "Risk score at time of report"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "rewarded",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EnsembleScoreEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "target",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet_risk",
+            "type": "u8"
+          },
+          {
+            "name": "program_risk",
+            "type": "u8"
+          },
+          {
+            "name": "token_risk",
+            "type": "u8"
+          },
+          {
+            "name": "combined_risk",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscalationEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "target",
+            "type": "pubkey"
+          },
+          {
+            "name": "risk_streak",
+            "type": "u8"
+          },
+          {
+            "name": "current_risk",
+            "type": "u8"
+          },
+          {
+            "name": "auto_escalated",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PauseEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PredictionEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "querier",
+            "type": "pubkey"
+          },
+          {
+            "name": "target_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "risk_score",
+            "type": "u8"
+          },
+          {
+            "name": "confidence",
+            "type": "u8"
+          },
+          {
+            "name": "model_version",
+            "type": "u64"
+          },
+          {
+            "name": "fee_paid",
+            "type": "u64"
+          },
+          {
+            "name": "passive_learning",
+            "type": "bool"
+          },
+          {
+            "name": "balance_drain_detected",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramBlacklistEntry",
+      "docs": [
+        "Blacklist entry for programs. PDA seeds: [\"prog_blacklist\", flagged_program]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flagged_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "reporter",
+            "type": "pubkey"
+          },
+          {
+            "name": "proof",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "stake_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "confirm_count",
+            "type": "u16"
+          },
+          {
+            "name": "dispute_count",
+            "type": "u16"
+          },
+          {
+            "name": "confirm_stake",
+            "type": "u64"
+          },
+          {
+            "name": "dispute_stake",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "resolved",
+            "type": "bool"
+          },
+          {
+            "name": "predicted_score",
+            "type": "u8"
+          },
+          {
+            "name": "rewarded",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramReportEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reporter",
+            "type": "pubkey"
+          },
+          {
+            "name": "flagged_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          },
+          {
+            "name": "proof",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramReputation",
+      "docs": [
+        "On-chain reputation profile for a Solana program.",
+        "PDA seeds: [\"program_rep\", program_id]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "first_scanned_slot",
+            "type": "u64"
+          },
+          {
+            "name": "times_scanned",
+            "type": "u32"
+          },
+          {
+            "name": "times_reported",
+            "type": "u16"
+          },
+          {
+            "name": "times_confirmed_scam",
+            "type": "u16"
+          },
+          {
+            "name": "has_upgrade_authority",
+            "docs": [
+              "Program can be rugged (upgrade authority exists)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "authority_is_flagged",
+            "docs": [
+              "Deployer/authority wallet is flagged in Aegiz"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "program_data_len",
+            "docs": [
+              "Size of deployed program binary (bytes)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "risk_score",
+            "docs": [
+              "Last computed risk score (0-100)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "risk_history",
+            "docs": [
+              "Last 5 risk scores for trend detection"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                5
+              ]
+            }
+          },
+          {
+            "name": "risk_history_idx",
+            "type": "u8"
+          },
+          {
+            "name": "high_risk_streak",
+            "docs": [
+              "Consecutive high-risk scans (>80)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "auto_escalated",
+            "docs": [
+              "Auto-escalated flag"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "program_balance",
+            "docs": [
+              "Program account SOL balance (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "deployer_program_count",
+            "docs": [
+              "Number of programs deployed by this authority"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "deployer_drain_count",
+            "docs": [
+              "Number of drain events on deployer's wallet"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "deployer_token_infections",
+            "docs": [
+              "Number of token infections on deployer's wallet"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramScamConfirmedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "model_version",
+            "type": "u64"
+          },
+          {
+            "name": "weight_delta",
+            "type": "f32"
+          },
+          {
+            "name": "predicted",
+            "type": "f32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramScanEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "risk_score",
+            "type": "u8"
+          },
+          {
+            "name": "has_upgrade_authority",
+            "type": "bool"
+          },
+          {
+            "name": "authority_is_flagged",
+            "type": "bool"
+          },
+          {
+            "name": "program_data_len",
+            "type": "u32"
+          },
+          {
+            "name": "deploy_slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReportResolvedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flagged_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "outcome",
+            "type": "u8"
+          },
+          {
+            "name": "total_confirm_stake",
+            "type": "u64"
+          },
+          {
+            "name": "total_dispute_stake",
+            "type": "u64"
+          },
+          {
+            "name": "model_corrected",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewardEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reporter",
+            "type": "pubkey"
+          },
+          {
+            "name": "reward_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "report_target",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScamConfirmedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flagged_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "model_version",
+            "type": "u64"
+          },
+          {
+            "name": "weight_delta",
+            "type": "f32"
+          },
+          {
+            "name": "accuracy",
+            "type": "f32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScamReportEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reporter",
+            "type": "pubkey"
+          },
+          {
+            "name": "flagged_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          },
+          {
+            "name": "proof",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScamVote",
+      "docs": [
+        "Vote PDA. Seeds: [\"vote\", blacklist_entry, voter]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "report",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_confirm",
+            "type": "bool"
+          },
+          {
+            "name": "stake_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SentinelModel",
+      "docs": [
+        "The brain of Aegiz — 2-layer neural network with training metadata.",
+        "PDA seeds: [\"model_weights\"]"
+      ],
+      "serialization": "bytemuckunsafe",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "model_version",
+            "type": "u64"
+          },
+          {
+            "name": "learning_rate",
+            "docs": [
+              "Base learning rate (adaptive: lr / sqrt(version))"
+            ],
+            "type": "f32"
+          },
+          {
+            "name": "correct_predictions",
+            "docs": [
+              "Correct predictions after confirm/dismiss"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "total_evaluated",
+            "docs": [
+              "Total evaluated (confirmed + dismissed)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "rolling_correct",
+            "docs": [
+              "Rolling accuracy: last 100 predictions (correct/total)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "rolling_total",
+            "type": "u32"
+          },
+          {
+            "name": "total_training_events",
+            "docs": [
+              "Total training events (SGD steps performed)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "_padding",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "weights",
+            "docs": [
+              "Neural network weights — see layout constants",
+              "V5+ state stored in reserved regions:",
+              "weights[1280] = paused flag (0.0 = running, 1.0 = paused)",
+              "weights[1281] = scan_rate_limit (as f32, 0 = unlimited)",
+              "weights[1282] = negative_samples_trained count"
+            ],
+            "type": {
+              "array": [
+                "f32",
+                1500
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SentinelTreasury",
+      "docs": [
+        "Treasury PDA. Seeds: [\"sentinel_treasury\"]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_collected",
+            "type": "u64"
+          },
+          {
+            "name": "prediction_fee",
+            "docs": [
+              "Fee charged for predict() scans (lamports, default: 1_000_000 = 0.001 SOL)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "scan_program_fee",
+            "docs": [
+              "Fee charged for scan_program() scans (lamports, default: 1_000_000 = 0.001 SOL)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "ensemble_fee",
+            "docs": [
+              "Fee charged for ensemble_score() premium scans (lamports, default: 2_000_000 = 0.002 SOL)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "scan_token_fee",
+            "docs": [
+              "Fee charged for scan_token_mint() scans (lamports, default: 1_000_000 = 0.001 SOL)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMintAnalysis",
+      "docs": [
+        "On-chain analysis of a token mint for honeypot/rug signals.",
+        "PDA seeds: [\"mint_analysis\", mint_pubkey]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "first_scanned_slot",
+            "type": "u64"
+          },
+          {
+            "name": "times_scanned",
+            "type": "u32"
+          },
+          {
+            "name": "has_mint_authority",
+            "docs": [
+              "Mint authority still active (can inflate supply)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "has_freeze_authority",
+            "docs": [
+              "Freeze authority active (can freeze your tokens)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "same_authority",
+            "docs": [
+              "Mint authority == freeze authority (common scam pattern)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "authority_is_multisig",
+            "docs": [
+              "Is the authority a known multisig? (safer)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "supply",
+            "docs": [
+              "Total supply (raw, before decimals)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "decimals",
+            "docs": [
+              "Token decimals"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "risk_score",
+            "docs": [
+              "Computed risk score (0-100)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMintScanEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "has_mint_authority",
+            "type": "bool"
+          },
+          {
+            "name": "has_freeze_authority",
+            "type": "bool"
+          },
+          {
+            "name": "same_authority",
+            "type": "bool"
+          },
+          {
+            "name": "authority_is_multisig",
+            "type": "bool"
+          },
+          {
+            "name": "supply",
+            "type": "u64"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "risk_score",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenScanEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "target",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_token_accounts",
+            "type": "u16"
+          },
+          {
+            "name": "delegated_count",
+            "type": "u16"
+          },
+          {
+            "name": "suspicious_owner_count",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "report",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_confirm",
+            "type": "bool"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WalletReputation",
+      "docs": [
+        "On-chain behavioral profile for a wallet.",
+        "PDA seeds: [\"reputation\", wallet_pubkey]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "first_seen_slot",
+            "type": "u64"
+          },
+          {
+            "name": "total_predictions",
+            "type": "u32"
+          },
+          {
+            "name": "times_reported",
+            "type": "u16"
+          },
+          {
+            "name": "times_confirmed_scam",
+            "type": "u16"
+          },
+          {
+            "name": "times_cleared",
+            "type": "u16"
+          },
+          {
+            "name": "last_prediction_slot",
+            "type": "u64"
+          },
+          {
+            "name": "cumulative_risk_score",
+            "type": "u32"
+          },
+          {
+            "name": "last_train_slot",
+            "docs": [
+              "Rate-limiting: slot of last training update"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_known_balance",
+            "docs": [
+              "Balance at last prediction (for drain detection)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "min_balance_seen",
+            "docs": [
+              "Lowest balance ever seen"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_balance_seen",
+            "docs": [
+              "Highest balance ever seen"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "drain_count",
+            "docs": [
+              "Count of times balance dropped >50% between predictions"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "token_infection_count",
+            "docs": [
+              "Count of delegated/infected token accounts found by scan_tokens"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "risk_history",
+            "docs": [
+              "Last 5 risk scores for trend detection (circular buffer)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                5
+              ]
+            }
+          },
+          {
+            "name": "risk_history_idx",
+            "docs": [
+              "Index into risk_history circular buffer"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "high_risk_streak",
+            "docs": [
+              "Count of consecutive high-risk predictions (>80)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "deployer_program_count",
+            "docs": [
+              "Number of programs this wallet has deployed (deployer tracking)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "auto_escalated",
+            "docs": [
+              "Auto-escalated flag (set when streak >= 3)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}
