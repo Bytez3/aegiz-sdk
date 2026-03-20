@@ -1,10 +1,49 @@
-# @aegiz/sdk
+<p align="center">
+  <img src="assets/banner.png" alt="Aegiz SDK Banner" width="100%" />
+</p>
 
-**On-Chain AI Threat Detection for Solana**
+<h1 align="center">@aegiz/sdk</h1>
 
-Aegiz is a neural network that runs _entirely on-chain_ — it trains, learns, and predicts inside a Solana smart contract. No servers. No APIs. No trust required.
+<p align="center">
+  <strong>On-Chain AI Threat Detection for Solana</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@aegiz/sdk"><img src="https://img.shields.io/npm/v/@aegiz/sdk?color=blue&label=npm" alt="npm version" /></a>
+  <a href="https://github.com/Bytez3/aegiz-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License" /></a>
+  <a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-On--Chain-blueviolet" alt="Solana" /></a>
+  <a href="https://aegiz.dev"><img src="https://img.shields.io/badge/website-aegiz.dev-cyan" alt="Website" /></a>
+</p>
+
+<p align="center">
+  <a href="#installation">Installation</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#api-reference">API Reference</a> •
+  <a href="#links">Links</a>
+</p>
+
+---
+
+Aegiz is a neural network that runs **entirely on-chain** — it trains, learns, and predicts inside a Solana smart contract. No servers. No APIs. No trust required.
 
 This SDK lets you integrate Aegiz threat detection into your dApp, wallet, or service.
+
+## Architecture
+
+<p align="center">
+  <img src="assets/architecture.png" alt="Aegiz Architecture" width="700" />
+</p>
+
+Three independent neural networks run **on-chain** and combine into an ensemble risk score:
+
+| Neural Network | Features | Purpose |
+|---|---|---|
+| **Wallet NN** | 16 → 8 → 1 (145 params) | Balance analysis, drain detection, risk streaks |
+| **Program NN** | 16 → 8 → 1 (145 params) | Upgrade authority, binary size, deployer reputation |
+| **Token NN** | 16 → 8 → 1 (145 params) | Mint/freeze authority, supply analysis, rugpull signals |
+
+> **435 active parameters** across 3 sub-networks, with 1500 total reserved slots for future expansion.
 
 ## Installation
 
@@ -23,6 +62,7 @@ npm install @solana/web3.js @coral-xyz/anchor
 
 ```typescript
 import { AegizClient } from "@aegiz/sdk";
+import { PublicKey } from "@solana/web3.js";
 
 // Connect to mainnet (default) or devnet
 const client = new AegizClient("https://api.devnet.solana.com");
@@ -42,10 +82,7 @@ const progRep = await client.getProgramReputation(programId);
 // Get token mint analysis
 const mint = await client.getTokenMintAnalysis(mintPubkey);
 
-// Get reporter profile
-const reporter = await client.getReporterProfile(reporterPubkey);
-
-// Get model stats
+// Get model stats (version, accuracy, active params)
 const stats = await client.getModelStats();
 console.log(stats.walletActiveParams);  // 145/145
 console.log(stats.programActiveParams); // 145/145
@@ -66,30 +103,27 @@ const prediction = await client.predict(targetWallet);
 console.log(prediction.riskScore);     // 0-100
 console.log(prediction.drainDetected); // boolean
 
-// Scan a program
+// Scan a program for threats
 await client.scanProgram(programId, programDataPda);
 
-// Scan a token mint
+// Scan a token mint for rugpull signals
 await client.scanTokenMint(mintPubkey);
 
-// Scan token accounts for drainers
-await client.scanTokens(walletPubkey, tokenAccounts);
-
-// Ensemble score (combines wallet + program + token NNs)
+// Ensemble score (combines all three NNs)
 await client.ensembleScore(walletRepPda, programRepPda, mintAnalysisPda);
 
-// Report a scam wallet or program
+// Community reporting
 await client.reportScam(scamWallet, "Drainer — stole 50 SOL", 10_000_000);
 await client.reportScamProgram(scamProgram, "Fake DEX", 10_000_000);
 
 // Vote on reports
-await client.voteOnReport(blacklistEntry, true);
-await client.voteOnProgramReport(blacklistEntry, false);
+await client.voteOnReport(blacklistEntry, true);   // confirm
+await client.voteOnProgramReport(blacklistEntry, false); // dispute
 ```
 
 ## API Reference
 
-### `AegizClient` (Read-Only)
+### `AegizClient` — Read-Only
 
 | Method | Description |
 |---|---|
@@ -101,9 +135,9 @@ await client.voteOnProgramReport(blacklistEntry, false);
 | `getModelStats()` | Model version, accuracy, active params |
 | `getBlacklistEntry(wallet)` | Wallet blacklist report details |
 | `getProgramBlacklistEntry(program)` | Program blacklist report details |
-| `AegizClient.classifyRisk(score)` | Score → tier classification |
+| `classifyRisk(score)` | Score → tier classification |
 
-### `AegizTransactionClient` (Wallet Required)
+### `AegizTransactionClient` — Wallet Required
 
 | Method | Description |
 |---|---|
@@ -126,7 +160,7 @@ await client.voteOnProgramReport(blacklistEntry, false);
 | `resolveReport(entry, wallet)` | Resolve a wallet report |
 | `resolveProgramReport(entry, program)` | Resolve a program report |
 | `rewardReporter(reporter, entry)` | Reward reporter for correct report |
-| `rewardProgramReporter(reporter, entry)` | Reward reporter for correct program report |
+| `rewardProgramReporter(reporter, entry)` | Reward program reporter |
 | `setFees(prediction, scanProg, ensemble, scanToken)` | Set system fees |
 | `resetAccuracy()` | Reset accuracy counters |
 | `withdrawTreasury()` | Withdraw treasury funds |
@@ -152,31 +186,33 @@ import {
 } from "@aegiz/sdk";
 ```
 
-## Architecture
-
-```
-16 Input Features → 8 Hidden Nodes → 1 Output (Risk Score)
-```
-
-Three sub-networks running on-chain:
-- **Wallet NN** (145 params): balance, age, drain detection, token infections, risk streaks
-- **Program NN** (145 params): upgrade authority, binary size, deployer reputation
-- **Token NN** (145 params): mint/freeze authority, supply analysis, rugpull signals
-
 ## Network
 
-| | Address |
+| | Value |
 |---|---|
 | **Program ID** | `5QA63aoUXwHB6aUSvbzpHejKaqFCf8RafAFjhfjjRVnT` |
 | **Architecture** | 3× (16→8→1) Ensemble |
-| **Total Parameters** | 435 active (1500 reserved) |
+| **Total Parameters** | 435 active / 1500 reserved |
+| **SDK Version** | 1.0.0 |
+
+## Features
+
+- 🧠 **On-Chain Neural Network** — Three 16→8→1 NNs running entirely on Solana
+- 🛡️ **Ensemble Scoring** — Combined risk assessment from wallet, program, and token analysis
+- 👥 **Community Reporting** — Stake-backed scam reporting with voting
+- 🔍 **Token Scanning** — Detect honeypots, rugpulls, and drainer patterns
+- 📊 **Reputation Tracking** — Persistent wallet and program reputation PDAs
+- ⚡ **Zero Trust** — No servers, no APIs, everything verifiable on-chain
+- 🏦 **Fee Governance** — Configurable prediction and scan fees
+- 🔄 **Weight Snapshots** — Rollback NN weights if needed
 
 ## Links
 
-- Website: [aegiz.dev](https://aegiz.dev)
-- Twitter: [@aegizsol](https://x.com/aegizsol)
-- GitHub: [Bytez3/aegiz-sdk](https://github.com/Bytez3/aegiz-sdk)
+- 🌐 Website: [aegiz.dev](https://aegiz.dev)
+- 🐦 Twitter: [@aegizsol](https://x.com/aegizsol)
+- 💻 GitHub: [Bytez3/aegiz-sdk](https://github.com/Bytez3/aegiz-sdk)
+- 🔗 Explorer: [View on Solana](https://explorer.solana.com/address/5QA63aoUXwHB6aUSvbzpHejKaqFCf8RafAFjhfjjRVnT)
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details.
